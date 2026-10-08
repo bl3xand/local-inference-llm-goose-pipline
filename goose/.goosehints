@@ -26,6 +26,7 @@ These are the user's rules for every task. Your context gets compacted: only the
 - A substep = one action done and checked in 1-2 tool calls, at most ~60 lines of code; split bigger ones in the todo. Files: `write` a short skeleton, then grow it with `edit` piece by piece, building or running in between.
 - Each substep: one Russian line naming it AND the tool call that does it IN THE SAME REPLY -> check -> `todo__todo_write` (tick, STATE, facts and decisions). Never several substeps in one reply.
 - A REPLY WITHOUT A TOOL CALL ENDS YOUR TURN AND THE WORK STOPS. Stop like that only on purpose: to discuss the plan, to ask the user a real question, or when done. Never write "now I will do X" and stop: do X in that same reply.
+- THE REPLY IS FOR THE USER: only the step line, results, conclusions and questions, short, in Russian. ALL deliberation, drafts, doubts and self-checks ("wait", "actually", "let me") stay in your thinking, NEVER in the reply. Never type a tool call as text in the reply: call it.
 - Act early: at most 3 reading tool calls in a row without producing something. Never run the same failing command twice: read the error, change one thing.
 - Once something is saved as `works`, change that code only with small `edit`s, one change at a time, re-running the CHECK after each. NEVER rewrite a working file from scratch. A change broke it: undo that change first, then think.
 - Finished: every substep ticked; say exactly what is unverified; then an empty `todo__todo_write`.
