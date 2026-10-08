@@ -1,0 +1,5 @@
+.env
+models/*
+!models/README.md
+__pycache__/
+*.pyc

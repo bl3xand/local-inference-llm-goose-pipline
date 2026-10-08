@@ -1,0 +1,5 @@
+{
+  "name": "todo-mirror",
+  "version": "1.0.0",
+  "description": "Copies the current todo list into goose Memory (category = project directory name) on every todo update, so a new session starts knowing where the last one stopped"
+}

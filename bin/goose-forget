@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+"""goose-forget - delete goose chat history (what Chat Recall searches and what the session list shows).
+
+  goose-forget list [N]            numbered list of the N most recent chats (default 30)
+  goose-forget 3m                  chats not used for 3 months (also 90d, 1y)
+  goose-forget pick 1 3 5-9        chats by their numbers from `list`
+  goose-forget project NAME        all chats whose working directory is NAME (folder name or path)
+  goose-forget all                 every chat
+
+Without --yes it only shows what would be deleted. Memory (rules, progress) is not touched: see goose-memory.
+"""
+import os, re, sqlite3, sys
+from datetime import datetime, timedelta, timezone
+
+args = [a for a in sys.argv[1:] if a != "--yes"]; yes = "--yes" in sys.argv
+if not args:
+    sys.exit(__doc__)
+db = sqlite3.connect(os.path.expanduser("~/.local/share/goose/sessions/sessions.db"), timeout=30)
+rows = db.execute("SELECT s.id, s.name, s.updated_at, s.working_dir, (SELECT count(*) FROM messages m WHERE m.session_id = s.id) "
+                  "FROM sessions s ORDER BY s.updated_at DESC").fetchall()
+
+def show(sel, numbered=False):
+    for n, r in sel:
+        print("%s%s  %-34s %3d msgs  [%s]" % (("%3d. " % n) if numbered else "  ", r[2][:16], (r[1] or r[0])[:34], r[4], r[3]))
+
+cmd = args[0].lower()
+if cmd == "list":
+    n = int(args[1]) if len(args) > 1 and args[1].isdigit() else 30
+    show(list(enumerate(rows, 1))[:n], numbered=True)
+    print("%d chats in total. Delete with: goose-forget pick <numbers> | <age like 3m> | project <name> | all" % len(rows))
+    sys.exit(0)
+m = re.fullmatch(r"(\d+)\s*([dmy])", cmd)
+if m:
+    days = int(m.group(1)) * {"d": 1, "m": 30, "y": 365}[m.group(2)]
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
+    sel = [(i, r) for i, r in enumerate(rows, 1) if r[2] < cutoff]
+elif cmd == "pick":
+    want = set()
+    for tok in re.split(r"[,\s]+", " ".join(args[1:])):
+        mm = re.fullmatch(r"(\d+)(?:-(\d+))?", tok)
+        if mm:
+            want.update(range(int(mm.group(1)), int(mm.group(2) or mm.group(1)) + 1))
+    sel = [(i, r) for i, r in enumerate(rows, 1) if i in want]
+elif cmd == "project" and len(args) > 1:
+    key = args[1].rstrip("/")
+    sel = [(i, r) for i, r in enumerate(rows, 1) if r[3].rstrip("/") == key or os.path.basename(r[3].rstrip("/")) == key]
+elif cmd == "all":
+    sel = list(enumerate(rows, 1))
+else:
+    sys.exit(__doc__)
+
+if not sel:
+    sys.exit("Nothing matches.")
+print("%d of %d chats selected:" % (len(sel), len(rows)))
+show(sel[:25], numbered=True)
+if len(sel) > 25:
+    print("  ... and %d more" % (len(sel) - 25))
+if not yes:
+    sys.exit("Nothing deleted. Re-run the same command with --yes to delete them.")
+ids = [(r[0],) for _, r in sel]
+with db:
+    db.executemany("DELETE FROM messages WHERE session_id = ?", ids)
+    db.executemany("DELETE FROM usage_ledger WHERE session_id = ?", ids)
+    db.executemany("DELETE FROM sessions WHERE id = ?", ids)
+db.execute("VACUUM")
+print("Deleted %d chats." % len(sel))

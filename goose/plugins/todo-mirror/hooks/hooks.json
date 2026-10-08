@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      { "matcher": "todo|^edit$|^write$", "hooks": [ { "type": "command", "command": "${PLUGIN_ROOT}/scripts/mirror.py", "timeout": 10 } ] }
+    ]
+  }
+}
