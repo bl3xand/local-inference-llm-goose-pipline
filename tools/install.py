@@ -51,12 +51,20 @@ def fill(text, env, name):
 
 def models_ini(text, env):
     """Drop settings whose value is empty and apply the per-model exceptions."""
-    special = {"fit-target": envfile.per_model(env.get("FIT_TARGET_PER_MODEL")), "ctx-size": envfile.per_model(env.get("CTX_SIZE_PER_MODEL"))}
+    batch = envfile.per_model(env.get("BATCH_SIZE_PER_MODEL"))
+    special = {"fit-target": envfile.per_model(env.get("FIT_TARGET_PER_MODEL")), "ctx-size": envfile.per_model(env.get("CTX_SIZE_PER_MODEL")),
+               "image-min-tokens": envfile.per_model(env.get("IMAGE_MIN_TOKENS_PER_MODEL")), "batch-size": batch, "ubatch-size": batch}
+    present = {(m.group(1), k) for m in re.finditer(r"^\[([^\]]+)\]\n(.*?)(?=^\[|\Z)", text, flags=re.S | re.M)
+               for k in re.findall(r"^([\w-]+) =", m.group(2), flags=re.M)}
     out, section = [], None
     for line in text.split("\n"):
         m = re.match(r"^\[([^\]]+)\]$", line)
         if m:
             section = m.group(1)
+            out.append(line)
+            # per-model settings the template has no line for go right under the section name
+            out += [f"{k} = {v[section]}" for k, v in special.items() if section in v and (section, k) not in present]
+            continue
         m = re.match(r"^([\w-]+) =\s*(.*)$", line)
         if m:
             if not m.group(2):
