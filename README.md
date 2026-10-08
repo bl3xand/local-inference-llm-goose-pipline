@@ -61,6 +61,7 @@ installer changes only five values in it, taken from `.env`.
 | `desktop/` | the "Goose Desktop" shortcut | `~/.local/share/applications/` |
 | `tools/vision-all.py` | makes every model in the folder first-class in Goose: name, pictures, reasoning levels | runs in place |
 | `tools/goose-vision/` | the "look at an image file" tool | `~/.local/share/goose-vision/` |
+| `tools/memwatch.sh` | live VRAM / RAM monitor with an optional guard that unloads the model before RAM runs out | runs in place |
 | `tools/envfile.py` | reads `.env` | - |
 | `models/` | put the models here; the files themselves are not in git | - |
 | `docs/command.md` | command cheat sheet | - |

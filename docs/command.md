@@ -234,6 +234,18 @@ systemctl --user stop llama-server
 journalctl --user -u llama-server -f -o cat | grep --line-buffered -E "n_gen|eval time"
 ```
 
+Память вживую, раз в 2 секунды: видеопамять, память драйвера карты, свободная оперативная (Ctrl+C — стоп):
+
+```bash
+~/Документы/LLM/local-inference-llm-goose-pipline/tools/memwatch.sh
+```
+
+То же с предохранителем: выгрузить модель, если свободной оперативной меньше 6000 МиБ:
+
+```bash
+~/Документы/LLM/local-inference-llm-goose-pipline/tools/memwatch.sh --guard 6000
+```
+
 Не убила ли система сервер из-за нехватки памяти:
 
 ```bash
