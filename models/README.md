@@ -1,6 +1,6 @@
-# Сюда кладутся модели
+# Put your models here
 
-Положите в эту папку файлы моделей `*.gguf` и их блоки зрения `mmproj-*.gguf`, затем выполните `./install.sh` в корне репозитория.
-Модель без файла `mmproj-…` будет работать, но не увидит картинки.
+Put the model files `*.gguf` and their vision projectors `mmproj-*.gguf` into this folder, then run `./install.sh` in the
+repository root. A model without an `mmproj-...` file works but cannot see pictures.
 
-Сами файлы в репозиторий не попадают (см. `.gitignore`). Другую папку с моделями можно задать в `.env`: `MODELS_DIR=…`.
+The files themselves are not committed (see `.gitignore`). A different models folder can be set in `.env`: `MODELS_DIR=...`.

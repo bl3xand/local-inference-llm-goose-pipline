@@ -1,79 +1,80 @@
-# Локальный «Claude Code»: Goose + llama.cpp
+# Local "Claude Code": Goose + llama.cpp
 
-Настройки, правила и скрипты, с которыми Goose Desktop работает на локальных моделях через `llama-server`.
-Сервер моделей запускается вместе с Goose и останавливается при его закрытии; в автозагрузку ничего не добавляется.
+Settings, rules and scripts that make Goose Desktop work with local models served by `llama-server`.
+The model server starts together with Goose and stops when Goose is closed; nothing is added to autostart.
 
-## Установка на новом компьютере
+## Installing on a new computer
 
-1. Поставить отдельно: Goose Desktop, `llama-server` (llama.cpp, собранный под вашу видеокарту), Python 3, ImageMagick.
-2. Склонировать репозиторий и запустить установщик:
+1. Install separately: Goose Desktop, `llama-server` (llama.cpp built for your GPU), Python 3, ImageMagick.
+2. Clone the repository and run the installer:
 
    ```bash
-   git clone git@github.com:bl3xand/local-inference-llm-goose-pipline.git
+   git clone https://github.com/bl3xand/local-inference-llm-goose-pipline.git
    cd local-inference-llm-goose-pipline
    ./install.sh
    ```
 
-   Первый запуск создаёт `.env` из `example.env`.
-3. Проверить `.env` (пути, память, видеокарта) и положить модели в `models/` или указать свою папку в `MODELS_DIR`.
-4. Ещё раз `./install.sh`, затем открыть Goose ярлыком «Goose Desktop».
-5. Если модели не видят вставленные картинки: закрыть Goose и открыть снова (каталог моделей Goose создаёт при первом запуске).
+   The first run creates `.env` from `example.env`.
+3. Check `.env` (paths, memory, GPU) and put the models into `models/`, or point `MODELS_DIR` at your own folder.
+4. Run `./install.sh` again, then open Goose with the "Goose Desktop" shortcut.
+5. If models do not see pasted pictures: close Goose and open it again (Goose creates its model catalog on first start).
 
-## Как менять настройки
+## Changing settings
 
-Все числа, которые приходится подбирать, лежат в `.env`: запас видеопамяти, окно контекста, число потоков, размер картинки,
-потолок рассуждений, порог сжатия. Описание каждого — в `example.env`.
+Every number that needs tuning lives in `.env`: free VRAM margin, context window, threads, picture size, reasoning cap,
+compaction threshold. Each one is described in `example.env`.
 
 ```bash
 ./install.sh
 ```
 
-Команду можно повторять сколько угодно: она перезаписывает только изменившиеся файлы, а прежние версии складывает в
-`~/.local/state/llm-pipeline-backup/`. С ключом `--restart` сразу перезапускает сервер моделей (оборвёт идущий чат).
-Без ключа новые настройки сервера подхватятся при следующем открытии Goose.
+The command is safe to repeat: it rewrites only the files that changed and keeps their previous versions in
+`~/.local/state/llm-pipeline-backup/`. With `--restart` it also restarts the model server at once (this interrupts a
+running chat). Without it, new server settings take effect the next time Goose is opened.
 
-Проверить, что получится, ничего не трогая:
+To see the result without touching anything:
 
 ```bash
-./install.sh --target /tmp/proba
+./install.sh --target /tmp/trial
 ```
 
-Файлы в домашней папке — производные. Править надо здесь, иначе следующий `./install.sh` вернёт всё как в репозитории.
-Исключение — `~/.config/goose/config.yaml`: его ведёт сам Goose, установщик меняет в нём только пять значений из `.env`.
+The files in the home folder are derived copies. Edit the files here, otherwise the next `./install.sh` puts the copies
+back to what the repository says. The exception is `~/.config/goose/config.yaml`: Goose maintains it itself, and the
+installer changes only five values in it, taken from `.env`.
 
-## Структура
+## Structure
 
-| Путь | Что это | Куда ставится |
+| Path | What it is | Installed to |
 |---|---|---|
-| `example.env` | все настройки с описанием; копия `.env` в git не попадает | — |
-| `install.sh`, `tools/install.py` | установщик | — |
-| `goose/.goosehints` | правила для моделей | `~/.config/goose/.goosehints` |
-| `goose/prompts/` | системная подсказка, сжатие контекста, субагенты | `~/.config/goose/prompts/` |
-| `goose/environment.conf` | напоминание, которое Goose добавляет в каждый ход | `~/.config/environment.d/goose.conf` |
-| `goose/recipes/` | команды `/init`, `/memory`, `/forget` | `~/.config/goose/recipes/` |
-| `goose/plugins/todo-mirror/` | копирует план в память при каждом изменении | `~/.agents/plugins/todo-mirror/` |
-| `goose/config.yaml.tpl` | настройки Goose для первой установки | `~/.config/goose/config.yaml` |
-| `server/models.ini.tpl` | настройки сервера по моделям | `~/.config/llama-server/models.ini` |
-| `server/llama-server.service.tpl` | служба сервера (без автозапуска) | `~/.config/systemd/user/` |
-| `bin/goose-local.tpl` | запуск Goose вместе с сервером | `~/.local/bin/goose-local` |
-| `bin/goose-memory`, `bin/goose-forget` | чистка памяти и истории чатов | `~/.local/bin/` |
-| `desktop/` | ярлык «Goose Desktop» | `~/.local/share/applications/` |
-| `tools/vision-all.py` | делает каждую модель из папки полноценной в Goose: имя, картинки, уровни рассуждений | запускается на месте |
-| `tools/goose-vision/` | инструмент «посмотреть на файл с картинкой» | `~/.local/share/goose-vision/` |
-| `tools/envfile.py` | чтение `.env` | — |
-| `models/` | сюда кладутся модели; сами файлы в git не попадают | — |
-| `docs/command.md` | шпаргалка по командам | — |
+| `example.env` | all settings with descriptions; your copy `.env` is not in git | - |
+| `install.sh`, `tools/install.py` | the installer | - |
+| `goose/.goosehints` | rules for the models | `~/.config/goose/.goosehints` |
+| `goose/prompts/` | system prompt, context compaction, subagents | `~/.config/goose/prompts/` |
+| `goose/environment.conf` | the reminder Goose adds to every turn | `~/.config/environment.d/goose.conf` |
+| `goose/recipes/` | the `/init`, `/memory`, `/forget` commands | `~/.config/goose/recipes/` |
+| `goose/plugins/todo-mirror/` | copies the plan into memory on every change | `~/.agents/plugins/todo-mirror/` |
+| `goose/config.yaml.tpl` | Goose settings for a first install | `~/.config/goose/config.yaml` |
+| `server/models.ini.tpl` | per-model server settings | `~/.config/llama-server/models.ini` |
+| `server/llama-server.service.tpl` | the server unit (no autostart) | `~/.config/systemd/user/` |
+| `bin/goose-local.tpl` | starts Goose together with the server | `~/.local/bin/goose-local` |
+| `bin/goose-memory`, `bin/goose-forget` | clean up memory and chat history | `~/.local/bin/` |
+| `desktop/` | the "Goose Desktop" shortcut | `~/.local/share/applications/` |
+| `tools/vision-all.py` | makes every model in the folder first-class in Goose: name, pictures, reasoning levels | runs in place |
+| `tools/goose-vision/` | the "look at an image file" tool | `~/.local/share/goose-vision/` |
+| `tools/envfile.py` | reads `.env` | - |
+| `models/` | put the models here; the files themselves are not in git | - |
+| `docs/command.md` | command cheat sheet | - |
 
-## Новая модель
+## Adding a model
 
-Положить `.gguf` и её `mmproj-….gguf` в папку моделей и открыть Goose заново: модель появится в списке сама, с окном и
-запасом видеопамяти из `.env`. Чтобы у модели были свои параметры (температура и прочее), которые переживут `./install.sh`,
-добавьте её секцию в `server/models.ini.tpl` по образцу соседних.
+Put the `.gguf` and its `mmproj-*.gguf` into the models folder and reopen Goose: the model appears in the list by itself,
+with the window and VRAM margin from `.env`. To give a model its own parameters (temperature and so on) that survive
+`./install.sh`, add its section to `server/models.ini.tpl`, following the neighbouring ones.
 
-## Чего здесь нет
+## What is not here
 
-- Самих моделей, памяти моделей, истории чатов, ключей и данных входа.
-- Установки Goose, llama.cpp и драйверов.
-- Подбора чисел под другое железо: значения в `example.env` найдены замерами на RX 9070 XT 16 ГБ и 32 ГБ оперативной памяти.
+- The models, model memory, chat history, keys and login data.
+- Installing Goose, llama.cpp and drivers.
+- Tuning for other hardware: the values in `example.env` were found by measurement on an RX 9070 XT 16 GB with 32 GB of RAM.
 
-После обновления Goose стоит сверить `goose/prompts/` со стандартными подсказками новой версии: это правленые копии.
+After a Goose update, compare `goose/prompts/` with the stock prompts of the new version: they are edited copies.
