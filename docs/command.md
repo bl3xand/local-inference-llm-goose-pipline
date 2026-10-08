@@ -15,30 +15,30 @@
 
 ## Репозиторий и настройки
 
-Всё самописное лежит в `~/Документы/LLM/local-inference-llm-goose-pipline/`. Файлы в домашней папке — копии оттуда.
+Всё самописное лежит в `/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/`. Файлы в домашней папке — копии оттуда.
 
 Числа, которые подбираем (запас видеопамяти, окно, потоки, размер картинки, порог сжатия), лежат в одном файле:
 
 ```bash
-xdg-open ~/Документы/LLM/local-inference-llm-goose-pipline/.env
+xdg-open /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/.env
 ```
 
 Применить после правки `.env` или любого файла репозитория (новое подхватится при следующем открытии Goose):
 
 ```bash
-~/Документы/LLM/local-inference-llm-goose-pipline/install.sh
+/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/install.sh
 ```
 
 То же и сразу перезапустить сервер (оборвёт идущий чат):
 
 ```bash
-~/Документы/LLM/local-inference-llm-goose-pipline/install.sh --restart
+/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/install.sh --restart
 ```
 
 Отправить изменения на GitHub:
 
 ```bash
-cd ~/Документы/LLM/local-inference-llm-goose-pipline && git add -A && git commit -m "настройки" && git push
+cd /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline && git add -A && git commit -m "настройки" && git push
 ```
 
 Править надо файлы в репозитории, а не копии в `~/.config`: следующий `install.sh` вернёт копии к виду из репозитория.
@@ -48,7 +48,7 @@ cd ~/Документы/LLM/local-inference-llm-goose-pipline && git add -A && g
 Файл правил, общий для всех моделей и всех папок:
 
 ```
-~/Документы/LLM/local-inference-llm-goose-pipline/goose/.goosehints
+/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/goose/.goosehints
 ```
 
 После правки выполнить `install.sh` (см. выше): он положит копию в `~/.config/goose/.goosehints`, откуда её читает Goose.
@@ -56,13 +56,13 @@ cd ~/Документы/LLM/local-inference-llm-goose-pipline && git add -A && g
 Посмотреть:
 
 ```bash
-cat ~/Документы/LLM/local-inference-llm-goose-pipline/goose/.goosehints
+cat /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/goose/.goosehints
 ```
 
 Открыть в редакторе:
 
 ```bash
-xdg-open ~/Документы/LLM/local-inference-llm-goose-pipline/goose/.goosehints
+xdg-open /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/goose/.goosehints
 ```
 
 Изменения действуют в новых чатах: уже открытый чат читает правила при старте.
@@ -237,13 +237,13 @@ journalctl --user -u llama-server -f -o cat | grep --line-buffered -E "n_gen|eva
 Память вживую, раз в 2 секунды: видеопамять, память драйвера карты, свободная оперативная (Ctrl+C — стоп):
 
 ```bash
-~/Документы/LLM/local-inference-llm-goose-pipline/tools/memwatch.sh
+/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/memwatch.sh
 ```
 
 То же с предохранителем: выгрузить модель, если свободной оперативной меньше 6000 МиБ:
 
 ```bash
-~/Документы/LLM/local-inference-llm-goose-pipline/tools/memwatch.sh --guard 6000
+/mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/memwatch.sh --guard 6000
 ```
 
 Не убила ли система сервер из-за нехватки памяти:
