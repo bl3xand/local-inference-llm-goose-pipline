@@ -103,31 +103,31 @@ xdg-open /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/goose/
 Показать таблицу «файл → имя в Goose», ничего не меняя:
 
 ```bash
-python3 ~/Документы/LLM/vision-all.py
+python3 /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/vision-all.py
 ```
 
 Применить вручную (после добавления или удаления модели):
 
 ```bash
-python3 ~/Документы/LLM/vision-all.py --apply
+python3 /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/vision-all.py --apply
 ```
 
 То же и сразу перезапустить сервер (оборвёт идущий чат):
 
 ```bash
-python3 ~/Документы/LLM/vision-all.py --apply --restart
+python3 /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/vision-all.py --apply --restart
 ```
 
 Обновить каталог облачных моделей Goose и вернуть в него наши:
 
 ```bash
-python3 ~/Документы/LLM/vision-all.py --update-catalog
+python3 /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/vision-all.py --update-catalog
 ```
 
 Убрать наши записи из каталога:
 
 ```bash
-python3 ~/Документы/LLM/vision-all.py --undo
+python3 /mnt/myfiles/Development/Linux/local-inference-llm-goose-pipline/tools/vision-all.py --undo
 ```
 
 ## Память
